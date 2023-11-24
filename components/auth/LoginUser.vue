@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { useDisplay } from "vuetify";
+const { mobile } = useDisplay();
 
 const loginData = ref({
   email: "",
@@ -9,6 +11,8 @@ const loginData = ref({
 const doLogin = (): void => {
   console.log(loginData.value);
 };
+
+const dBlockButton = computed(() => mobile.value);
 </script>
 
 <template>
@@ -28,7 +32,9 @@ const doLogin = (): void => {
       />
 
       <v-row no-gutters justify="center" class="mt-3">
-        <v-btn color="primary" @click="doLogin">Entrar</v-btn>
+        <v-btn color="primary" :block="dBlockButton" @click="doLogin"
+          >Entrar</v-btn
+        >
       </v-row>
     </v-col>
   </v-container>
