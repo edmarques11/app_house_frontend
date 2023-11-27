@@ -6,6 +6,10 @@ const login = loginStore();
 
 const { mobile } = useDisplay();
 
+const nuxtApp = useNuxtApp();
+
+const doLogin = nuxtApp.$debounce(login.doLogin, 500);
+
 const dBlockButton = computed(() => mobile.value);
 const errorsMessage = computed(() => login.errors);
 </script>
@@ -31,7 +35,7 @@ const errorsMessage = computed(() => login.errors);
       />
 
       <v-row no-gutters justify="center" class="mt-3">
-        <v-btn color="primary" :block="dBlockButton" @click="login.doLogin"
+        <v-btn color="primary" :block="dBlockButton" @click="doLogin"
           >Entrar</v-btn
         >
       </v-row>

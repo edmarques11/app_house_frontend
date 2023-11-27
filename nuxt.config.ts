@@ -21,5 +21,5 @@ export default defineNuxtConfig({
       },
     },
   },
-  plugins: ["~/plugins/axios.ts"],
+  plugins: ["~/plugins/axios.ts", "~/plugins/debounce.ts"],
 });
