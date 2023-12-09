@@ -25,7 +25,7 @@ const tab = ref(0);
               </v-window-item>
 
               <v-window-item :value="1">
-                <h1>cadastro</h1>
+                <UserCreateUser />
               </v-window-item>
             </v-window>
           </v-card-text>
