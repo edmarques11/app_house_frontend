@@ -10,8 +10,22 @@ const nuxtApp = useNuxtApp();
 
 const doLogin = nuxtApp.$debounce(login.doLogin, 500);
 
+const typeInputPassword = ref("password");
+
 const dBlockButton = computed(() => mobile.value);
 const errorsMessage = computed(() => login.errors);
+const iconActionPassword = computed(() =>
+  typeInputPassword.value === "password"
+    ? "mdi-eye-outline"
+    : "mdi-eye-off-outline",
+);
+
+const toggleTypePasswordInput = () => {
+  const types = ["password", "text"];
+  const index = types.indexOf(typeInputPassword.value);
+
+  typeInputPassword.value = types[index === 0 ? 1 : 0];
+};
 </script>
 
 <template>
@@ -28,11 +42,17 @@ const errorsMessage = computed(() => login.errors);
       <v-text-field
         v-model="login.password"
         name="password"
-        type="password"
+        :type="typeInputPassword"
         label="Senha"
         :error-messages="errorsMessage.password"
         class="mb-3"
-      />
+      >
+        <template #append-inner>
+          <v-icon @click="toggleTypePasswordInput">{{
+            iconActionPassword
+          }}</v-icon>
+        </template>
+      </v-text-field>
 
       <v-row no-gutters justify="center" class="mt-3">
         <v-btn color="primary" :block="dBlockButton" @click="doLogin"

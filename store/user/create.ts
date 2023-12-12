@@ -46,10 +46,12 @@ export const createUserStore = defineStore("createUser", {
       try {
         const nuxtApp = useNuxtApp();
 
+        if (!this.data.profile_image_id) delete this.data.profile_image_id;
+
         await nuxtApp.$axios.post("/user", this.data);
 
         this.setErrors([]);
-        alert.show("Login realizado com sucesso", "success");
+        alert.show("Cadastro realizado com sucesso!", "success");
       } catch (err: any) {
         if (err?.data?.length) {
           this.setErrors(err.data);
