@@ -9,7 +9,6 @@ const props = defineProps({
 const router = useRouter();
 
 const bindAppBar = computed(() => ({
-  class: "appbar-default-layout",
   elevation: "2",
   ...props.appBarProps,
 }));
@@ -20,16 +19,16 @@ const pushTo = (path: string) => {
 </script>
 
 <template>
-  <v-app-bar v-bind="bindAppBar"
-    ><template #append>
-      <v-btn
-        icon="mdi-heart"
-        @click="pushTo({ path: '/advertisement/create' })" /></template
-  ></v-app-bar>
+  <v-app-bar v-bind="bindAppBar">
+    <template #append>
+      <CustomButtonTooltip
+        v-bind="{
+          tooltipProps: { text: 'Criar novo anúncio' },
+          btnProps: { icon: 'mdi-home-plus' },
+        }"
+        @dispatch-action="pushTo('/advertisement/create')"
+      />
+      <AuthActionAuth />
+    </template>
+  </v-app-bar>
 </template>
-
-<style>
-.appbar-default-layout {
-  background-color: red !important;
-}
-</style>

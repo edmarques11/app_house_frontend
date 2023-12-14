@@ -27,6 +27,7 @@ export const loginStore = defineStore("login", {
     },
     async doLogin() {
       const alert = alertStore();
+      const router = useRouter();
       const cookie = useCookie("authorization", { secure: false });
 
       try {
@@ -40,10 +41,11 @@ export const loginStore = defineStore("login", {
           password,
         });
 
-        cookie.value = token;
+        cookie.value = "Bearer " + token;
 
         this.setErrors([]);
         alert.show("Login realizado com sucesso", "success");
+        router.push("/");
       } catch (err: any) {
         if (err?.data?.length) {
           this.setErrors(err.data);

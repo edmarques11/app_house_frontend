@@ -8,7 +8,13 @@ const { mobile } = useDisplay();
 
 const nuxtApp = useNuxtApp();
 
-const doLogin = nuxtApp.$debounce(login.doLogin, 500);
+const loading = ref(false);
+
+const doLogin = nuxtApp.$debounce(async () => {
+  loading.value = true;
+  await login.doLogin();
+  loading.value = false;
+}, 500);
 
 const typeInputPassword = ref("password");
 
@@ -46,6 +52,7 @@ const toggleTypePasswordInput = () => {
         label="Senha"
         :error-messages="errorsMessage.password"
         class="mb-3"
+        @keypress.enter="doLogin"
       >
         <template #append-inner>
           <v-icon @click="toggleTypePasswordInput">{{
@@ -55,7 +62,11 @@ const toggleTypePasswordInput = () => {
       </v-text-field>
 
       <v-row no-gutters justify="center" class="mt-3">
-        <v-btn color="primary" :block="dBlockButton" @click="doLogin"
+        <v-btn
+          color="primary"
+          :block="dBlockButton"
+          :disabled="loading"
+          @click="doLogin"
           >Entrar</v-btn
         >
       </v-row>
