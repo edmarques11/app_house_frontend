@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useTheme } from "vuetify";
 const props = defineProps({
   appBarProps: {
     type: Object,
@@ -7,11 +8,24 @@ const props = defineProps({
 });
 
 const router = useRouter();
+const route = useRoute();
+const theme = useTheme();
 
 const bindAppBar = computed(() => ({
   elevation: "2",
   ...props.appBarProps,
 }));
+const activeAction = computed(() => {
+  type T = {
+    [key: string]: number;
+  };
+  const mapActive: T = {
+    "advertisement-create": 0,
+  };
+
+  return route.name ? mapActive[route.name.toString()] : -1;
+});
+const activeColor = computed(() => theme.current.value.colors.primary);
 
 const pushTo = (path: string) => {
   router.push({ path });
@@ -24,7 +38,10 @@ const pushTo = (path: string) => {
       <CustomButtonTooltip
         v-bind="{
           tooltipProps: { text: 'Criar novo anúncio' },
-          btnProps: { icon: 'mdi-home-plus' },
+          btnProps: {
+            icon: 'mdi-home-plus',
+            class: [{ 'btn-active-color': activeAction === 0 }],
+          },
         }"
         @dispatch-action="pushTo('/advertisement/create')"
       />
@@ -32,3 +49,9 @@ const pushTo = (path: string) => {
     </template>
   </v-app-bar>
 </template>
+
+<style>
+.btn-active-color {
+  color: v-bind(activeColor);
+}
+</style>
