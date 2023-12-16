@@ -34,7 +34,6 @@ export const addressStore = defineStore("address", {
     },
     async getAddressByZipCode(zipCode: string) {
       const alert = alertStore();
-      const nuxtApp = useNuxtApp();
 
       try {
         const {
@@ -44,9 +43,7 @@ export const addressStore = defineStore("address", {
           bairro: district,
           localidade: state,
           uf,
-        }: any = await nuxtApp.$axios.get(
-          `https://viacep.com.br/ws/${zipCode}/json`,
-        );
+        }: any = await $fetch(`https://viacep.com.br/ws/${zipCode}/json`);
 
         Object.assign(this.data, {
           zip_code: zipcodeResult,

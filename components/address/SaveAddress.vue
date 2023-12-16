@@ -9,7 +9,6 @@ watch(address.data, ({ zip_code: zipCode }) => {
 });
 
 const getAddress = nuxtApp.$debounce(async (zipCode: string) => {
-  console.log(zipCode);
   if (!zipCode || zipCode.length !== 8) return;
   await address.getAddressByZipCode(zipCode);
 }, 500);
