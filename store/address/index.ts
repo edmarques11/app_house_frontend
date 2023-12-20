@@ -6,8 +6,9 @@ type ErrorsType = {
   public_place: "";
   complement: "";
   district: "";
-  state: "";
+  city: "";
   uf: "";
+  number: "";
   [key: string]: null | string;
 };
 
@@ -18,8 +19,9 @@ export const addressStore = defineStore("address", {
       public_place: "",
       complement: "",
       district: "",
-      state: "",
+      city: "",
       uf: "",
+      number: "",
     },
     errors: {} as ErrorsType,
   }),
@@ -41,7 +43,7 @@ export const addressStore = defineStore("address", {
           logradouro: publicPlace,
           complemento: complement,
           bairro: district,
-          localidade: state,
+          localidade: city,
           uf,
         }: any = await $fetch(`https://viacep.com.br/ws/${zipCode}/json`);
 
@@ -50,7 +52,7 @@ export const addressStore = defineStore("address", {
           public_place: publicPlace,
           complement,
           district,
-          state,
+          city,
           uf,
         });
       } catch {
