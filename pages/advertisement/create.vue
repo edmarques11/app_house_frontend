@@ -1,5 +1,14 @@
 <script setup lang="ts">
 const window = ref(0);
+
+const stepConfig = ref({
+  submit: () => {},
+  back: () => {},
+});
+
+function setStepConfig(config: any): void {
+  stepConfig.value = config;
+}
 </script>
 
 <template>
@@ -9,13 +18,16 @@ const window = ref(0);
         <v-card elevation="2" class="ma-3 pa-3">
           <v-window v-model="window">
             <v-window-item>
-              <AddressSaveAddress />
+              <AddressSaveAddress @step-config="(e) => setStepConfig(e)" />
             </v-window-item>
           </v-window>
         </v-card>
       </v-col>
     </v-row>
-    <CustomBottomNavActions />
+    <CustomBottomNavActions
+      @return="stepConfig.back"
+      @forward="stepConfig.submit"
+    />
   </v-col>
 </template>
 

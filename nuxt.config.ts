@@ -25,6 +25,7 @@ export default defineNuxtConfig({
     "~/plugins/axios.ts",
     "~/plugins/debounce.ts",
     "~/plugins/logout.ts",
+    "~/plugins/maska.ts",
   ],
   runtimeConfig: {
     public: {

@@ -4,6 +4,8 @@ const address = addressStore();
 
 const nuxtApp = useNuxtApp();
 
+const emit = defineEmits(["step-config"]);
+
 const states = [
   "AC",
   "AL",
@@ -34,14 +36,36 @@ const states = [
   "TO",
 ];
 
+const masks = {
+  zip_code: { mask: "#####-###" },
+};
+
+const validZipCode = ref(false);
+
 watch(address.data, ({ zip_code: zipCode }) => {
   getAddress(zipCode);
 });
 
 const getAddress = nuxtApp.$debounce(async (zipCode: string) => {
-  if (!zipCode || zipCode.length !== 8) return;
-  await address.getAddressByZipCode(zipCode);
+  try {
+    validZipCode.value = false;
+
+    zipCode = zipCode.replace("-", "");
+    if (!zipCode || zipCode.length !== 8) return;
+    await address.getAddressByZipCode(zipCode);
+
+    validZipCode.value = true;
+  } catch {
+    validZipCode.value = false;
+  }
 }, 500);
+
+onBeforeMount(() => {
+  emit("step-config", {
+    submit: address.saveAddress,
+    back: () => {},
+  });
+});
 </script>
 
 <template>
@@ -51,6 +75,7 @@ const getAddress = nuxtApp.$debounce(async (zipCode: string) => {
     </p>
     <v-text-field
       v-model="address.data.zip_code"
+      v-maska:[masks.zip_code]
       name="cep"
       type="text"
       label="CEP"
@@ -58,7 +83,7 @@ const getAddress = nuxtApp.$debounce(async (zipCode: string) => {
       class="mb-3"
     />
 
-    <div v-if="address.data.zip_code">
+    <div v-if="validZipCode">
       <v-select v-model="address.data.uf" :items="states" label="Estado" />
 
       <v-text-field

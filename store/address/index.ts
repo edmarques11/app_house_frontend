@@ -73,6 +73,7 @@ export const addressStore = defineStore("address", {
           this.setErrors(err.data);
         }
         alert.show(err.message, "error");
+        throw err;
       }
     },
   },
