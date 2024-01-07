@@ -1,13 +1,32 @@
 <script setup lang="ts">
-const window = ref(0);
+import { AddressSaveAddress, ImmobileSaveImmobile } from "#components";
+const step = ref(0);
+const steps = [AddressSaveAddress, ImmobileSaveImmobile];
 
 const stepConfig = ref({
-  submit: () => {},
-  back: () => {},
+  submit: () => Promise<void>,
+  back: () => false,
 });
 
 function setStepConfig(config: any): void {
   stepConfig.value = config;
+}
+
+async function executeSubmit(): Promise<void> {
+  try {
+    await stepConfig.value.submit();
+
+    if (step.value < steps.length - 1) {
+      step.value++;
+    }
+  } catch {}
+}
+function executeBack(): void {
+  const back = stepConfig.value.back();
+
+  if (back && step.value > 0) {
+    step.value--;
+  }
 }
 </script>
 
@@ -16,18 +35,19 @@ function setStepConfig(config: any): void {
     <v-row no-gutters justify="center" style="height: inherit">
       <v-col cols="12" md="5" xl="3" align-self="center">
         <v-card elevation="2" class="ma-3 pa-3">
-          <v-window v-model="window">
-            <v-window-item>
-              <AddressSaveAddress @step-config="(e) => setStepConfig(e)" />
+          <v-window v-model="step">
+            <v-window-item v-for="(stepComponent, idx) in steps" :key="idx">
+              <Component
+                :is="stepComponent"
+                v-if="idx === step"
+                @step-config="(e: any) => setStepConfig(e)"
+              />
             </v-window-item>
           </v-window>
         </v-card>
       </v-col>
     </v-row>
-    <CustomBottomNavActions
-      @return="stepConfig.back"
-      @forward="stepConfig.submit"
-    />
+    <CustomBottomNavActions @return="executeBack" @forward="executeSubmit" />
   </v-col>
 </template>
 

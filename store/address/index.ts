@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { alertStore } from "../alert";
+import { saveImmobileStore } from "../immobile/save";
 
 type ErrorsType = {
   zip_code: "";
@@ -61,10 +62,14 @@ export const addressStore = defineStore("address", {
     },
     async saveAddress() {
       const alert = alertStore();
+      const immobile = saveImmobileStore();
       const nuxtApp = useNuxtApp();
 
       try {
-        await nuxtApp.$axios.post("/address", this.data);
+        const {
+          data: { id },
+        } = await nuxtApp.$axios.post("/address", this.data);
+        immobile.data.address_id = id;
 
         this.setErrors([]);
         alert.show("Endereço salvo com sucesso!", "success");

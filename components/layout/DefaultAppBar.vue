@@ -34,6 +34,15 @@ const pushTo = (path: string) => {
 
 <template>
   <v-app-bar v-bind="bindAppBar">
+    <v-app-bar-title>
+      <v-row no-gutters class="pa-0 ma-0" justify="center">
+        <v-col cols="6" class="pa-0 ma-0">
+          <CustomSearchAdvertisements
+            :text-field-props="{ hideDetails: true, density: 'compact' }"
+          />
+        </v-col>
+      </v-row>
+    </v-app-bar-title>
     <template #append>
       <CustomButtonTooltip
         v-bind="{

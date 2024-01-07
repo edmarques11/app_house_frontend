@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { addressStore } from "~/store/address";
+import { alertStore } from "~/store/alert";
 const address = addressStore();
+const alert = alertStore();
 
 const nuxtApp = useNuxtApp();
 
@@ -42,9 +44,12 @@ const masks = {
 
 const validZipCode = ref(false);
 
-watch(address.data, ({ zip_code: zipCode }) => {
-  getAddress(zipCode);
-});
+watch(
+  () => address.data.zip_code,
+  (zipCode) => {
+    getAddress(zipCode);
+  },
+);
 
 const getAddress = nuxtApp.$debounce(async (zipCode: string) => {
   try {
@@ -55,7 +60,8 @@ const getAddress = nuxtApp.$debounce(async (zipCode: string) => {
     await address.getAddressByZipCode(zipCode);
 
     validZipCode.value = true;
-  } catch {
+  } catch (e: any) {
+    alert.show("Cep não encontrado", "error");
     validZipCode.value = false;
   }
 }, 500);
@@ -79,7 +85,7 @@ onBeforeMount(() => {
       name="cep"
       type="text"
       label="CEP"
-      :error-messages="null"
+      :error-messages="address.errors.zip_code"
       class="mb-3"
     />
 
@@ -91,7 +97,7 @@ onBeforeMount(() => {
         name="district"
         type="text"
         label="Bairro"
-        :error-messages="null"
+        :error-messages="address.errors.district"
         class="mb-3"
       />
 
@@ -100,7 +106,7 @@ onBeforeMount(() => {
         name="city"
         type="text"
         label="Cidade"
-        :error-messages="null"
+        :error-messages="address.errors.city"
         class="mb-3"
       />
 
@@ -109,7 +115,7 @@ onBeforeMount(() => {
         name="public_place"
         type="text"
         label="Logradouro"
-        :error-messages="null"
+        :error-messages="address.errors.public_place"
         class="mb-3"
       />
 
@@ -118,7 +124,7 @@ onBeforeMount(() => {
         name="number"
         type="number"
         label="Número"
-        :error-messages="null"
+        :error-messages="address.errors.number"
         class="mb-3"
       />
 
@@ -127,7 +133,7 @@ onBeforeMount(() => {
         name="complement"
         type="text"
         label="Complemento"
-        :error-messages="null"
+        :error-messages="address.errors.complement"
         class="mb-3"
       />
     </div>
