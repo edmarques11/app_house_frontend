@@ -1,7 +1,15 @@
 <script setup lang="ts">
-import { AddressSaveAddress, ImmobileSaveImmobile } from "#components";
+import {
+  AddressSaveAddress,
+  ImmobileSaveImmobile,
+  AdvertisementSaveAdvertisement,
+} from "#components";
 const step = ref(0);
-const steps = [AddressSaveAddress, ImmobileSaveImmobile];
+const steps = [
+  AddressSaveAddress,
+  ImmobileSaveImmobile,
+  AdvertisementSaveAdvertisement,
+];
 
 const stepConfig = ref({
   submit: () => Promise<void>,

@@ -1,18 +1,33 @@
 import { defineStore } from "pinia";
 import { alertStore } from "../alert";
-import { advertisementStore } from "../advertisement/save";
 
 type ErrorsType = {
-  type: "";
-  address_id: "";
+  title: string;
+  description: string;
+  width: string;
+  length: string;
+  references: string;
+  phone_contact: string;
+  price: string;
+  immobile_id: string;
+  owner_id: string;
+  images: string;
   [key: string]: null | string;
 };
 
-export const saveImmobileStore = defineStore("saveImmobile", {
+export const advertisementStore = defineStore("advertisement", {
   state: () => ({
     data: {
-      type: "",
-      address_id: "",
+      title: "",
+      description: "",
+      width: "",
+      length: "",
+      references: "",
+      phone_contact: "",
+      price: 0,
+      immobile_id: "",
+      owner_id: "",
+      images: "",
     },
     errors: {} as ErrorsType,
   }),
@@ -27,17 +42,13 @@ export const saveImmobileStore = defineStore("saveImmobile", {
     },
     async save() {
       const alert = alertStore();
-      const advertisement = advertisementStore();
       const nuxtApp = useNuxtApp();
 
       try {
-        const {
-          data: { id },
-        } = await nuxtApp.$axios.post("/immobile", this.data);
-        advertisement.data.immobile_id = id;
+        await nuxtApp.$axios.post("/advertisement", this.data);
 
         this.setErrors([]);
-        alert.show("Imóvel salvo com sucesso!", "success");
+        alert.show("Endereço salvo com sucesso!", "success");
       } catch (err: any) {
         if (err?.data?.length) {
           this.setErrors(err.data);
