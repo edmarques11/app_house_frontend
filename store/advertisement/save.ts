@@ -40,6 +40,26 @@ export const advertisementStore = defineStore("advertisement", {
           errors.find((e) => e.includes(key))?.replace(`${key}: `, "") || null;
       });
     },
+    async uploadImage(file: File) {
+      const nuxtApp = useNuxtApp();
+      const alert = alertStore();
+
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const { data } = await nuxtApp.$axios.post("/image", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        console.log(data);
+      } catch (err: any) {
+        alert.show(err.message, "error");
+        throw err;
+      }
+    },
     async save() {
       const alert = alertStore();
       const nuxtApp = useNuxtApp();

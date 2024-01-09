@@ -16,7 +16,7 @@ export default defineNuxtPlugin(() => {
       return response?.data;
     },
     (error) => {
-      if (error?.response?.code === 401) {
+      if (error?.response?.status === 401) {
         nuxtApp.$logout();
       }
       return Promise.reject(error?.response?.data);

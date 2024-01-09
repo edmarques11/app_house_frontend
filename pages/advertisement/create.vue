@@ -39,28 +39,31 @@ function executeBack(): void {
 </script>
 
 <template>
-  <v-col class="full-height pa-0">
-    <v-row no-gutters justify="center" style="height: inherit">
-      <v-col cols="12" md="5" xl="3" align-self="center">
-        <v-card elevation="2" class="ma-3 pa-3">
-          <v-window v-model="step">
-            <v-window-item v-for="(stepComponent, idx) in steps" :key="idx">
-              <Component
-                :is="stepComponent"
-                v-if="idx === step"
-                @step-config="(e: any) => setStepConfig(e)"
-              />
-            </v-window-item>
-          </v-window>
-        </v-card>
-      </v-col>
-    </v-row>
+  <v-row no-gutters justify="center" class="full-height">
+    <v-col cols="12" md="5" xl="3" align-self="center">
+      <v-card elevation="2" class="ma-3 pa-3">
+        <v-window v-model="step">
+          <v-window-item v-for="(stepComponent, idx) in steps" :key="idx">
+            <v-row no-gutters>
+              <v-btn @click="step++">+step</v-btn>
+            </v-row>
+            <Component
+              :is="stepComponent"
+              v-if="idx === step"
+              @step-config="(e: any) => setStepConfig(e)"
+            />
+          </v-window-item>
+        </v-window>
+      </v-card>
+    </v-col>
     <CustomBottomNavActions @return="executeBack" @forward="executeSubmit" />
-  </v-col>
+  </v-row>
 </template>
 
 <style scoped>
 .full-height {
-  height: calc(100dvh - 124px);
+  min-height: calc(100vh - 124px);
+  max-height: fit-content;
+  padding-bottom: 60px !important;
 }
 </style>

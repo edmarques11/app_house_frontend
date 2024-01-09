@@ -4,6 +4,28 @@ import { advertisementStore } from "~/store/advertisement/save";
 const advertisement = advertisementStore();
 const emit = defineEmits(["step-config"]);
 
+const images = computed(() => advertisement.data.images);
+
+const inputImageAdvertisement = ref<HTMLInputElement | null>(null);
+
+function selectImage() {
+  inputImageAdvertisement.value?.click();
+}
+
+async function uploadImage(e: Event) {
+  const target = e.target as HTMLInputElement;
+  const file = target.files?.[0];
+
+  if (file) {
+    try {
+      await advertisement.uploadImage(file);
+    } catch {
+    } finally {
+      target.value = "";
+    }
+  }
+}
+
 onBeforeMount(() => {
   emit("step-config", {
     submit: advertisement.save,
@@ -80,5 +102,40 @@ onBeforeMount(() => {
       :error-messages="advertisement.errors.price"
       class="mb-3"
     />
+
+    <p class="text-subtitle-2 font-weight-bold text-primary mb-4">
+      Adicione imagens do anúncio
+    </p>
+
+    <v-row no-gutters class="mb-2">
+      <v-btn
+        icon="mdi-image-plus-outline"
+        color="primary"
+        class="ml-2"
+        @click="selectImage"
+      />
+      <v-btn
+        icon="mdi-delete"
+        color="red"
+        class="ml-2"
+        :disabled="!images.length"
+      />
+    </v-row>
+
+    <input
+      ref="inputImageAdvertisement"
+      class="d-none"
+      type="file"
+      @input="uploadImage"
+    />
+
+    <v-carousel v-if="images.length" height="250">
+      <v-carousel-item
+        v-for="(img, idx) in images"
+        :key="idx"
+        :lazy-src="img"
+        cover
+      />
+    </v-carousel>
   </v-col>
 </template>
