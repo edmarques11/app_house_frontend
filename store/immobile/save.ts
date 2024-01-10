@@ -14,7 +14,10 @@ export const saveImmobileStore = defineStore("saveImmobile", {
       type: "",
       address_id: "",
     },
-    errors: {} as ErrorsType,
+    errors: {
+      type: "",
+      address_id: "",
+    } as ErrorsType,
   }),
   actions: {
     setErrors(errors: string[]) {

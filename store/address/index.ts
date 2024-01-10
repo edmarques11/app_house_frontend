@@ -24,7 +24,15 @@ export const addressStore = defineStore("address", {
       uf: "",
       number: "",
     },
-    errors: {} as ErrorsType,
+    errors: {
+      zip_code: "",
+      public_place: "",
+      complement: "",
+      district: "",
+      city: "",
+      uf: "",
+      number: "",
+    } as ErrorsType,
   }),
   actions: {
     setErrors(errors: string[]) {

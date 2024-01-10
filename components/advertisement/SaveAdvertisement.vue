@@ -129,12 +129,17 @@ onBeforeMount(() => {
       @input="uploadImage"
     />
 
-    <v-carousel v-if="images.length" height="250">
+    <v-carousel
+      v-if="images.length"
+      height="250"
+      :show-arrows="false"
+      hide-delimiter-background
+      delimiter-icon="mdi-square"
+    >
       <v-carousel-item
         v-for="(img, idx) in images"
         :key="idx"
-        :lazy-src="img"
-        cover
+        :src="img.publicUrl"
       />
     </v-carousel>
   </v-col>

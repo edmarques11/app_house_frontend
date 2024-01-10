@@ -15,6 +15,14 @@ type ErrorsType = {
   [key: string]: null | string;
 };
 
+type Image = {
+  id?: string;
+  publicUrl?: string;
+  hash: string;
+  created_at: Date;
+  updated_at: Date;
+};
+
 export const advertisementStore = defineStore("advertisement", {
   state: () => ({
     data: {
@@ -27,9 +35,20 @@ export const advertisementStore = defineStore("advertisement", {
       price: 0,
       immobile_id: "",
       owner_id: "",
-      images: "",
+      images: [] as Image[],
     },
-    errors: {} as ErrorsType,
+    errors: {
+      title: "",
+      description: "",
+      width: "",
+      length: "",
+      references: "",
+      phone_contact: "",
+      price: "",
+      immobile_id: "",
+      owner_id: "",
+      images: "",
+    } as ErrorsType,
   }),
   actions: {
     setErrors(errors: string[]) {
@@ -54,7 +73,7 @@ export const advertisementStore = defineStore("advertisement", {
           },
         });
 
-        console.log(data);
+        this.data.images.push(data);
       } catch (err: any) {
         alert.show(err.message, "error");
         throw err;
