@@ -30,6 +30,7 @@
     "maska": "^2.1.10",
     "pinia": "^2.1.7",
     "prettier": "^3.1.0",
-    "sass": "^1.69.5"
+    "sass": "^1.69.5",
+    "vue-currency-input": "^3.0.5"
   }
 }

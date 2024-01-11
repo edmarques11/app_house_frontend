@@ -26,6 +26,10 @@ async function uploadImage(e: Event) {
   }
 }
 
+const masks = {
+  phone: { mask: ["(##) ####-####", "(##) #####-####"] },
+};
+
 onBeforeMount(() => {
   emit("step-config", {
     submit: advertisement.save,
@@ -49,44 +53,31 @@ onBeforeMount(() => {
       class="mb-3"
     />
 
-    <v-text-field
+    <v-textarea
       v-model="advertisement.data.description"
       name="description"
       type="text"
       label="Descrição"
       :error-messages="advertisement.errors.description"
       class="mb-3"
+      counter="5000"
     />
 
-    <v-text-field
-      v-model="advertisement.data.width"
-      name="width"
-      type="text"
-      label="Largura"
-      :error-messages="advertisement.errors.width"
-      class="mb-3"
-    />
-
-    <v-text-field
-      v-model="advertisement.data.length"
-      name="length"
-      type="text"
-      label="Comprimento"
-      :error-messages="advertisement.errors.length"
-      class="mb-3"
-    />
-
-    <v-text-field
+    <v-textarea
       v-model="advertisement.data.references"
       name="references"
       type="text"
       label="Referências"
       :error-messages="advertisement.errors.references"
       class="mb-3"
+      counter="255"
+      rows="3"
     />
 
     <v-text-field
       v-model="advertisement.data.phone_contact"
+      v-maska:[masks.phone]
+      placeholder="(00) 00000-0000"
       name="phone_contact"
       type="text"
       label="Telefone para contato"
@@ -103,8 +94,34 @@ onBeforeMount(() => {
       class="mb-3"
     />
 
-    <p class="text-subtitle-2 font-weight-bold text-primary mb-4">
+    <p class="text-subtitle-2 font-weight-bold text-primary mb-4">Dimensões</p>
+    <v-text-field
+      v-model="advertisement.data.width"
+      name="width"
+      type="text"
+      label="Largura (m²)"
+      :error-messages="advertisement.errors.width"
+      class="mb-3"
+    />
+
+    <v-text-field
+      v-model="advertisement.data.length"
+      name="length"
+      type="text"
+      label="Comprimento (m²)"
+      :error-messages="advertisement.errors.length"
+      class="mb-3"
+    />
+
+    <p class="text-subtitle-2 font-weight-bold text-primary mb-0">
       Adicione imagens do anúncio
+    </p>
+    <p
+      v-if="advertisement.errors.images.length"
+      class="mb-4 pl-4 text-caption"
+      style="color: #b00020"
+    >
+      {{ advertisement.errors.images }}
     </p>
 
     <v-row no-gutters class="mb-2">

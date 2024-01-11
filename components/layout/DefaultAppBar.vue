@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { useTheme } from "vuetify";
-const props = defineProps({
-  appBarProps: {
-    type: Object,
-    default: () => ({}),
+
+const props = withDefaults(
+  defineProps<{
+    appBarProps?: Record<string, unknown>;
+  }>(),
+  {
+    appBarProps: () => ({}),
   },
-});
+);
 
 const router = useRouter();
 const route = useRoute();

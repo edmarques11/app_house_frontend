@@ -1,14 +1,14 @@
 <script setup lang="ts">
-const props = defineProps({
-  tooltipProps: {
-    type: Object,
-    default: () => ({}),
+const props = withDefaults(
+  defineProps<{
+    tooltipProps?: Record<string, unknown>;
+    btnProps?: Record<string, unknown>;
+  }>(),
+  {
+    tooltipProps: () => ({}),
+    btnProps: () => ({}),
   },
-  btnProps: {
-    type: Object,
-    default: () => ({}),
-  },
-});
+);
 
 const emits = defineEmits(["dispatch-action"]);
 

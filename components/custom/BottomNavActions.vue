@@ -1,14 +1,14 @@
 <script setup lang="ts">
-const props = defineProps({
-  showArrow: {
-    type: Boolean,
-    default: true,
+const props = withDefaults(
+  defineProps<{
+    showArrow?: boolean;
+    propsBtnAdvance?: Record<string, unknown>;
+  }>(),
+  {
+    showArrow: true,
+    propsBtnAdvance: () => ({}),
   },
-  propsBtnAdvance: {
-    type: Object,
-    default: () => ({}),
-  },
-});
+);
 
 const emit = defineEmits(["forward", "return"]);
 
