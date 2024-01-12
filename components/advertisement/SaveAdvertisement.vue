@@ -7,6 +7,7 @@ const emit = defineEmits(["step-config"]);
 const images = computed(() => advertisement.data.images);
 
 const inputImageAdvertisement = ref<HTMLInputElement | null>(null);
+const currentViewImage = ref<string | null>(null);
 
 function selectImage() {
   inputImageAdvertisement.value?.click();
@@ -24,6 +25,10 @@ async function uploadImage(e: Event) {
       target.value = "";
     }
   }
+}
+
+async function deleteImage() {
+  await advertisement.deleteImage(currentViewImage.value!);
 }
 
 const masks = {
@@ -88,7 +93,7 @@ onBeforeMount(() => {
     <v-text-field
       v-model="advertisement.data.price"
       name="price"
-      type="text"
+      type="number"
       label="Preço (mensal)"
       :error-messages="advertisement.errors.price"
       class="mb-3"
@@ -98,7 +103,7 @@ onBeforeMount(() => {
     <v-text-field
       v-model="advertisement.data.width"
       name="width"
-      type="text"
+      type="number"
       label="Largura (m²)"
       :error-messages="advertisement.errors.width"
       class="mb-3"
@@ -107,7 +112,7 @@ onBeforeMount(() => {
     <v-text-field
       v-model="advertisement.data.length"
       name="length"
-      type="text"
+      type="number"
       label="Comprimento (m²)"
       :error-messages="advertisement.errors.length"
       class="mb-3"
@@ -136,6 +141,7 @@ onBeforeMount(() => {
         color="red"
         class="ml-2"
         :disabled="!images.length"
+        @click="deleteImage"
       />
     </v-row>
 
@@ -148,15 +154,18 @@ onBeforeMount(() => {
 
     <v-carousel
       v-if="images.length"
+      v-model="currentViewImage"
       height="250"
       :show-arrows="false"
       hide-delimiter-background
       delimiter-icon="mdi-square"
+      touch
     >
       <v-carousel-item
         v-for="(img, idx) in images"
         :key="idx"
         :src="img.publicUrl"
+        :value="img.id"
       />
     </v-carousel>
   </v-col>

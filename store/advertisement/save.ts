@@ -28,11 +28,11 @@ export const advertisementStore = defineStore("advertisement", {
     data: {
       title: "",
       description: "",
-      width: "",
-      length: "",
+      width: null,
+      length: null,
       references: "",
       phone_contact: "",
-      price: 0,
+      price: null,
       immobile_id: "",
       owner_id: "",
       images: [] as Image[],
@@ -79,15 +79,40 @@ export const advertisementStore = defineStore("advertisement", {
         throw err;
       }
     },
+    async deleteImage(imageId: string) {
+      const alert = alertStore();
+      const nuxtApp = useNuxtApp();
+
+      try {
+        await nuxtApp.$axios.delete(`/image/${imageId}`);
+        this.data.images = this.data.images.filter(
+          (image) => image.id !== imageId,
+        );
+
+        alert.show("Imagem deletada com sucesso!", "success");
+      } catch (err: any) {
+        alert.show(err.message, "error");
+        throw err;
+      }
+    },
     async save() {
       const alert = alertStore();
       const nuxtApp = useNuxtApp();
 
       try {
-        await nuxtApp.$axios.post("/advertisement", this.data);
+        const { images, price, length, width, ...restData } = this.data;
+        const payload = {
+          images: images.map((image) => image.id),
+          price: Number(price),
+          length: Number(length),
+          width: Number(width),
+          ...restData,
+        };
+
+        await nuxtApp.$axios.post("/advertisement", payload);
 
         this.setErrors([]);
-        alert.show("Endereço salvo com sucesso!", "success");
+        alert.show("Anúncio salvo com sucesso!", "success");
       } catch (err: any) {
         if (err?.data?.length) {
           this.setErrors(err.data);
