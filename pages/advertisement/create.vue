@@ -3,12 +3,14 @@ import {
   AddressSaveAddress,
   ImmobileSaveImmobile,
   AdvertisementSaveAdvertisement,
+  CustomSuccessStep,
 } from "#components";
 const step = ref(0);
 const steps = [
   AddressSaveAddress,
   ImmobileSaveImmobile,
   AdvertisementSaveAdvertisement,
+  CustomSuccessStep,
 ];
 
 const stepConfig = ref({

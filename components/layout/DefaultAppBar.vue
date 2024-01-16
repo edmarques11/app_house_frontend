@@ -24,6 +24,7 @@ const activeAction = computed(() => {
   };
   const mapActive: T = {
     "advertisement-create": 0,
+    "advertisement-list": 1,
   };
 
   return route.name ? mapActive[route.name.toString()] : -1;
@@ -56,6 +57,16 @@ const pushTo = (path: string) => {
           },
         }"
         @dispatch-action="pushTo('/advertisement/create')"
+      />
+      <CustomButtonTooltip
+        v-bind="{
+          tooltipProps: { text: 'Criar novo anúncio' },
+          btnProps: {
+            icon: 'mdi-folder-home',
+            class: [{ 'btn-active-color': activeAction === 1 }],
+          },
+        }"
+        @dispatch-action="pushTo('/advertisement/list')"
       />
       <AuthActionAuth />
     </template>
