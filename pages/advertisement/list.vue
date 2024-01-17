@@ -1,31 +1,16 @@
 <script lang="ts" setup>
-const images: string[] = [
-  "https://cdn.vuetifyjs.com/images/cards/docks.jpg",
-  "https://cdn.vuetifyjs.com/images/cards/hotel.jpg",
-];
+const image: string = "https://cdn.vuetifyjs.com/images/cards/hotel.jpg";
 
 const formatPrice = (price: number) =>
   price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 </script>
 
 <template>
-  <v-row no-gutters justify="center">
-    <v-col cols="12" sm="6" md="4">
+  <v-row no-gutters justify="center" class="mt-4">
+    <v-col cols="12" sm="6" md="3">
       <v-card>
         <v-col>
-          <v-carousel
-            height="250"
-            :show-arrows="false"
-            hide-delimiter-background
-            delimiter-icon="mdi-square"
-            touch
-          >
-            <v-carousel-item
-              v-for="(img, idx) in images"
-              :key="idx"
-              :src="img"
-            />
-          </v-carousel>
+          <v-img :src="image" width="auto" cover />
 
           <p class="text-primary font-weight-bold text-end mt-4">
             {{ formatPrice(250) }}

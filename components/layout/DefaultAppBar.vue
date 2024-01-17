@@ -60,7 +60,7 @@ const pushTo = (path: string) => {
       />
       <CustomButtonTooltip
         v-bind="{
-          tooltipProps: { text: 'Criar novo anúncio' },
+          tooltipProps: { text: 'Seus anúncios' },
           btnProps: {
             icon: 'mdi-folder-home',
             class: [{ 'btn-active-color': activeAction === 1 }],
