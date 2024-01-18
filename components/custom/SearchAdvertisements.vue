@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { VTextField, VIcon } from "vuetify/components";
+
 const props = withDefaults(
   defineProps<{
-    textFieldProps?: Record<string, any>;
+    textFieldProps?: Partial<VTextField>;
     icon?: string;
-    iconProps?: Record<string, any>;
+    iconProps?: Partial<VIcon>;
   }>(),
   {
     textFieldProps: () => ({}),
@@ -12,20 +14,11 @@ const props = withDefaults(
   },
 );
 
-type TVariant =
-  | "underlined"
-  | "outlined"
-  | "filled"
-  | "solo"
-  | "solo-inverted"
-  | "solo-filled"
-  | "plain";
-
-const bindTextField = computed(() => ({
+const bindTextField = computed<Partial<VTextField>>(() => ({
   label: "Onde você quer morar?",
   placeholder: "Estado, cidade, bairro...",
   rounded: true,
-  variant: "solo" as TVariant,
+  variant: "solo",
   ...props.textFieldProps,
 }));
 const bindIcon = computed(() => ({ ...props.iconProps }));

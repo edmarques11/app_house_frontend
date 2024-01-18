@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { VBtn } from "vuetify/components";
+
 const props = withDefaults(
   defineProps<{
     showArrow?: boolean;
-    propsBtnAdvance?: Record<string, unknown>;
+    propsBtnAdvance?: Partial<VBtn>;
   }>(),
   {
     showArrow: true,
