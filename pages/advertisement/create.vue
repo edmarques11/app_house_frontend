@@ -13,8 +13,12 @@ const steps = [
   CustomSuccessStep,
 ];
 
-const stepConfig = ref({
-  submit: () => Promise<void>,
+type IStepConfig = {
+  submit: () => Promise<void>;
+  back: () => boolean;
+};
+const stepConfig = ref<IStepConfig>({
+  submit: () => Promise.resolve(),
   back: () => false,
 });
 

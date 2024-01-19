@@ -1,10 +1,4 @@
-export type IImage = {
-  id?: string;
-  publicUrl?: string;
-  hash: string;
-  created_at: Date;
-  updated_at: Date;
-};
+import type { IImage } from "~/store/image/interfaces/Image";
 
 export type IImobile = {
   id?: string;

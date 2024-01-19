@@ -1,17 +1,40 @@
 <script lang="ts" setup>
 import { listAdvertisementStore } from "~/store/advertisement/List";
-import type { IAdvertisement } from "~/store/advertisement/interfaces/ListAdvertisement.ts";
+import {
+  AdvertisementModalViewAdvertisement,
+  AdvertisementModalEditAdvertisement,
+  AdvertisementModalConfirm,
+} from "#components";
 
 const advertisement = listAdvertisementStore();
 
-const formatPrice = (price: number) =>
-  price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+type IModal = "view" | "edit" | "delete";
+const modalAdvertisement = ref<{
+  modal: IModal;
+  id: string;
+  open: boolean;
+}>({
+  modal: "view",
+  id: "",
+  open: false,
+});
+
+function openModal(modal: IModal, id: string) {
+  modalAdvertisement.value.modal = modal;
+  modalAdvertisement.value.id = id;
+  modalAdvertisement.value.open = true;
+}
 
 const advertisements = computed(() => advertisement.advertisements);
+const currentModal = computed(() => {
+  const mapModal = {
+    view: AdvertisementModalViewAdvertisement,
+    edit: AdvertisementModalEditAdvertisement,
+    delete: AdvertisementModalConfirm,
+  };
 
-function getImageUrl(ad: IAdvertisement) {
-  return ad.images[0].publicUrl;
-}
+  return mapModal[modalAdvertisement.value.modal];
+});
 
 onBeforeMount(async () => {
   await advertisement.list();
@@ -27,56 +50,19 @@ onBeforeMount(async () => {
       sm="6"
       md="3"
     >
-      <v-card>
-        <v-col>
-          <v-img :src="getImageUrl(ad)" width="auto" max-height="250" cover />
-
-          <p class="text-primary font-weight-bold text-end mt-4">
-            {{ formatPrice(ad.price) }}
-          </p>
-          <p class="mb-4 font-weight-bold text-h6">{{ ad.title }}</p>
-          <p>
-            <v-icon icon="mdi-home-city" class="mr-2" />{{ ad.immobile.type }}
-          </p>
-          <p>
-            <v-icon icon="mdi-resize" class="mr-2" />{{ ad.width }} x
-            {{ ad.length }} m²
-          </p>
-
-          <v-row no-gutters justify="end" class="pa-0 ma-0">
-            <CustomButtonTooltip
-              v-bind="{
-                tooltipProps: { text: 'Detalhes', location: 'top' },
-              }"
-            >
-              <template #default="{ bind }">
-                <v-icon
-                  v-bind="{
-                    ...bind.propsActivator,
-                    color: 'primary',
-                    icon: 'mdi-eye',
-                  }"
-                />
-              </template>
-            </CustomButtonTooltip>
-            <CustomButtonTooltip
-              v-bind="{
-                tooltipProps: { text: 'Apagar', location: 'top' },
-              }"
-            >
-              <template #default="{ bind }">
-                <v-icon
-                  v-bind="{
-                    ...bind.propsActivator,
-                    color: 'red',
-                    icon: 'mdi-delete',
-                  }"
-                />
-              </template>
-            </CustomButtonTooltip>
-          </v-row>
-        </v-col>
-      </v-card>
+      <AdvertisementCardAdvertisement
+        :advertisement="ad"
+        @action="(action) => openModal(action, ad.id)"
+      />
     </v-col>
+
+    <v-dialog v-model="modalAdvertisement.open" width="550">
+      <component
+        :is="currentModal"
+        v-if="modalAdvertisement.open"
+        :advertisement-id="modalAdvertisement.id"
+        @close="() => (modalAdvertisement.open = false)"
+      />
+    </v-dialog>
   </v-row>
 </template>

@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { alertStore } from "../alert";
+import type { IAdvertisement } from "./interfaces/SaveAdvertisement";
 
 type ErrorsType = {
   title: string;
@@ -15,28 +16,9 @@ type ErrorsType = {
   [key: string]: null | string;
 };
 
-type Image = {
-  id?: string;
-  publicUrl?: string;
-  hash: string;
-  created_at: Date;
-  updated_at: Date;
-};
-
 export const advertisementStore = defineStore("advertisement", {
   state: () => ({
-    data: {
-      title: "",
-      description: "",
-      width: null,
-      length: null,
-      references: "",
-      phone_contact: "",
-      price: null,
-      immobile_id: "",
-      owner_id: "",
-      images: [] as Image[],
-    },
+    data: {} as IAdvertisement,
     errors: {
       title: "",
       description: "",

@@ -2,7 +2,14 @@
 import { advertisementStore } from "~/store/advertisement/save";
 
 const advertisement = advertisementStore();
-const emit = defineEmits(["step-config"]);
+
+type IStepConfig = {
+  submit: () => Promise<void>;
+  back: () => boolean;
+};
+const emit = defineEmits<{
+  (e: "step-config", config: IStepConfig): void;
+}>();
 
 const images = computed(() => advertisement.data.images);
 
