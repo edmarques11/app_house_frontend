@@ -97,12 +97,15 @@ onBeforeMount(() => {
       class="mb-3"
     />
 
-    <v-text-field
+    <CustomCurrencyField
       v-model="advertisement.data.price"
-      name="price"
-      type="number"
-      label="Preço (mensal)"
-      :error-messages="advertisement.errors.price"
+      v-bind="{
+        propsTextField: {
+          label: 'Preço (mensal)',
+          errorMessages: advertisement.errors.price,
+          name: 'price',
+        },
+      }"
       class="mb-3"
     />
 

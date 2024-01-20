@@ -18,7 +18,18 @@ type ErrorsType = {
 
 export const advertisementStore = defineStore("advertisement", {
   state: () => ({
-    data: {} as IAdvertisement,
+    data: {
+      title: "",
+      description: "",
+      width: 0,
+      length: 0,
+      references: "",
+      phone_contact: "",
+      price: "",
+      immobile_id: "",
+      owner_id: "",
+      images: [],
+    } as IAdvertisement,
     errors: {
       title: "",
       description: "",
@@ -82,12 +93,12 @@ export const advertisementStore = defineStore("advertisement", {
       const nuxtApp = useNuxtApp();
 
       try {
-        const { images, price, length, width, ...restData } = this.data;
+        const { images, price, width, length, ...restData } = this.data;
         const payload = {
           images: images.map((image) => image.id),
-          price: Number(price),
-          length: Number(length),
+          price: Number(price.replace(".", "").replace(",", ".")),
           width: Number(width),
+          length: Number(length),
           ...restData,
         };
 
