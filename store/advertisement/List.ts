@@ -29,5 +29,17 @@ export const listAdvertisementStore = defineStore("listAdvertisement", {
         alert.show(err.message, "error");
       }
     },
+    async deleteAdvertisement(id: string) {
+      const alert = alertStore();
+      const nuxt = useNuxtApp();
+
+      try {
+        await nuxt.$axios.delete(`/advertisement/${id}`);
+
+        alert.show("Anuncio deletado com sucesso", "success");
+      } catch (err: any) {
+        alert.show(err.message, "error");
+      }
+    },
   },
 });

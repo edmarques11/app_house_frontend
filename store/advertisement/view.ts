@@ -1,9 +1,28 @@
 import { alertStore } from "../alert";
-import type { IAdvertisement } from "~/store/advertisement/interfaces/ListAdvertisement";
+import type {
+  IAdvertisement,
+  IImobile,
+} from "~/store/advertisement/interfaces/ListAdvertisement";
 
 export const viewAdvertisementStore = defineStore("viewAdvertisement", {
   state: () => ({
-    data: {} as IAdvertisement,
+    data: {
+      id: "",
+      active: 0,
+      title: "",
+      description: "",
+      width: 0,
+      length: 0,
+      references: "",
+      phone_contact: "",
+      price: 0,
+      immobile_id: "",
+      owner_id: "",
+      created_at: new Date(),
+      updated_at: new Date(),
+      immobile: {} as IImobile,
+      images: [],
+    } as IAdvertisement,
   }),
   actions: {
     async getAdvertisement(id: string) {

@@ -11,7 +11,7 @@ const emits = defineEmits<{
 }>();
 
 const formatPrice = (price: number): string =>
-  price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  Number(price).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 const advertisement = computed(() => advertisementStore.data);
 const images = computed(() => advertisement.value.images);

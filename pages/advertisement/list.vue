@@ -25,6 +25,20 @@ function openModal(modal: IModal, id: string) {
   modalAdvertisement.value.open = true;
 }
 
+async function confirmAction() {
+  const mapActions = {
+    delete: async () =>
+      await advertisement.deleteAdvertisement(modalAdvertisement.value.id),
+    edit: () => {},
+    view: () => {},
+  };
+  const modal = modalAdvertisement.value.modal;
+
+  await mapActions[modal]();
+  modalAdvertisement.value.open = false;
+  await advertisement.list();
+}
+
 const advertisements = computed(() => advertisement.advertisements);
 const currentModal = computed(() => {
   const mapModal = {
@@ -49,6 +63,7 @@ onBeforeMount(async () => {
       cols="12"
       sm="6"
       md="3"
+      class="ma-2"
     >
       <AdvertisementCardAdvertisement
         :advertisement="ad"
@@ -62,6 +77,7 @@ onBeforeMount(async () => {
         v-if="modalAdvertisement.open"
         :advertisement-id="modalAdvertisement.id"
         @close="() => (modalAdvertisement.open = false)"
+        @confirm="confirmAction"
       />
     </v-dialog>
   </v-row>
