@@ -1,7 +1,7 @@
 export default defineNuxtRouteMiddleware((to) => {
   const authCookie = useCookie("authorization");
 
-  const publicRoutes = ["auth"];
+  const publicRoutes = ["auth", "index"];
   if (to.name === "auth" && authCookie.value) {
     return navigateTo("/");
   } else if (

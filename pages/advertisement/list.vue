@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { listAdvertisementStore } from "~/store/advertisement/List";
+import { listAdvertisementStore } from "~/store/advertisement/list";
 import {
   AdvertisementModalViewAdvertisement,
   AdvertisementModalEditAdvertisement,
@@ -51,7 +51,7 @@ const currentModal = computed(() => {
 });
 
 onBeforeMount(async () => {
-  await advertisement.list();
+  await advertisement.list(1);
 });
 </script>
 

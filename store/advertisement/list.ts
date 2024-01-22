@@ -9,7 +9,7 @@ export const listAdvertisementStore = defineStore("listAdvertisement", {
     total: 0,
   }),
   actions: {
-    async list() {
+    async list(toOwner = 0) {
       const nuxtApp = useNuxtApp();
       const alert = alertStore();
 
@@ -20,6 +20,7 @@ export const listAdvertisementStore = defineStore("listAdvertisement", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
+            toOwner,
           },
         });
 

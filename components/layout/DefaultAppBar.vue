@@ -23,8 +23,9 @@ const activeAction = computed(() => {
     [key: string]: number;
   };
   const mapActive: T = {
-    "advertisement-create": 0,
-    "advertisement-list": 1,
+    index: 0,
+    "advertisement-create": 1,
+    "advertisement-list": 2,
   };
 
   return route.name ? mapActive[route.name.toString()] : -1;
@@ -50,10 +51,20 @@ const pushTo = (path: string) => {
     <template #append>
       <CustomButtonTooltip
         v-bind="{
+          tooltipProps: { text: 'Ver anúncios disponíveis' },
+          btnProps: {
+            icon: 'mdi-list-box',
+            class: [{ 'btn-active-color': activeAction === 0 }],
+          },
+        }"
+        @dispatch-action="pushTo('/')"
+      />
+      <CustomButtonTooltip
+        v-bind="{
           tooltipProps: { text: 'Criar novo anúncio' },
           btnProps: {
             icon: 'mdi-home-plus',
-            class: [{ 'btn-active-color': activeAction === 0 }],
+            class: [{ 'btn-active-color': activeAction === 1 }],
           },
         }"
         @dispatch-action="pushTo('/advertisement/create')"
@@ -63,7 +74,7 @@ const pushTo = (path: string) => {
           tooltipProps: { text: 'Seus anúncios' },
           btnProps: {
             icon: 'mdi-folder-home',
-            class: [{ 'btn-active-color': activeAction === 1 }],
+            class: [{ 'btn-active-color': activeAction === 2 }],
           },
         }"
         @dispatch-action="pushTo('/advertisement/list')"

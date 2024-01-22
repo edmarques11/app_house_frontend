@@ -50,9 +50,9 @@ function executeBack(): void {
       <v-card elevation="2" class="ma-3 pa-3">
         <v-window v-model="step">
           <v-window-item v-for="(stepComponent, idx) in steps" :key="idx">
-            <v-row no-gutters>
+            <!-- <v-row no-gutters>
               <v-btn @click="step++">+step</v-btn>
-            </v-row>
+            </v-row> -->
             <Component
               :is="stepComponent"
               v-if="idx === step"

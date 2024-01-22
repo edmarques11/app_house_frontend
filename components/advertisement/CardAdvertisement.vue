@@ -3,6 +3,7 @@ import type { IAdvertisement } from "~/store/advertisement/interfaces/ListAdvert
 
 const props = defineProps<{
   advertisement: IAdvertisement;
+  hideActions?: boolean;
 }>();
 
 const emits = defineEmits<{
@@ -15,10 +16,18 @@ const formatPrice = (price: number): string =>
 function getImageUrl(ad: IAdvertisement): string | undefined {
   return ad.images[0].publicUrl;
 }
+
+const eventsCard = computed(() => {
+  if (props.hideActions)
+    return {
+      click: () => emits("action", "view"),
+    };
+  else return {};
+});
 </script>
 
 <template>
-  <v-card>
+  <v-card :class="{ 'cursor-pointer': hideActions }" v-on="eventsCard">
     <v-col>
       <v-img
         :src="getImageUrl(props.advertisement)"
@@ -50,7 +59,7 @@ function getImageUrl(ad: IAdvertisement): string | undefined {
         }}
       </p>
 
-      <v-row no-gutters justify="end" class="pa-0 ma-0">
+      <v-row v-if="!hideActions" no-gutters justify="end" class="pa-0 ma-0">
         <CustomButtonTooltip
           v-bind="{
             tooltipProps: { text: 'Detalhes', location: 'top' },
@@ -103,3 +112,9 @@ function getImageUrl(ad: IAdvertisement): string | undefined {
     </v-col>
   </v-card>
 </template>
+
+<style scoped>
+.cursor-pointer {
+  cursor: pointer;
+}
+</style>
