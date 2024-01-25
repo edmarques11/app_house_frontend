@@ -28,7 +28,7 @@ export const loginStore = defineStore("login", {
     async doLogin() {
       const alert = alertStore();
       const router = useRouter();
-      const cookie = useCookie("authorization", { secure: false });
+      const cookie = useCookie("authorization", { secure: true });
 
       try {
         const nuxtApp = useNuxtApp();
