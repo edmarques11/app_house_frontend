@@ -1,8 +1,12 @@
-import axios, { type AxiosInstance } from "axios";
+import axios, {
+  type AxiosInstance,
+  type InternalAxiosRequestConfig,
+} from "axios";
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
   const nuxtApp = useNuxtApp();
+  const cookieAuth = useCookie("authorization");
 
   const axiosInstance: AxiosInstance = axios.create({
     baseURL: config.public.apiBaseUrl,
@@ -10,6 +14,18 @@ export default defineNuxtPlugin(() => {
     timeoutErrorMessage: "Tempo limite de responsta esgotado",
     withCredentials: true,
   });
+
+  axiosInstance.interceptors.request.use(
+    (
+      config: InternalAxiosRequestConfig<any>,
+    ):
+      | InternalAxiosRequestConfig<any>
+      | Promise<InternalAxiosRequestConfig<any>> => {
+      config.headers.Authorization = cookieAuth.value;
+
+      return config;
+    },
+  );
 
   axiosInstance.interceptors.response.use(
     (response) => {
