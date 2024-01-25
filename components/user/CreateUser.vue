@@ -61,7 +61,7 @@ const toggleTypePasswordInput = () => {
 
       <v-row no-gutters justify="center" class="mt-3">
         <v-btn color="primary" :block="dBlockButton" @click="createUserAction"
-          >Entrar</v-btn
+          >cadastrar</v-btn
         >
       </v-row>
     </v-col>

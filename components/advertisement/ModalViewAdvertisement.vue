@@ -15,6 +15,18 @@ const formatPrice = (price: number): string =>
 
 const advertisement = computed(() => advertisementStore.data);
 const images = computed(() => advertisement.value.images);
+const addressString = computed(() => {
+  const { address } = advertisement.value.immobile;
+
+  return `${address.district}${
+    address.complement ? " " + address.complement : ""
+  }, ${address.public_place}${address.number ? "Nº " + address.number : ""}, ${
+    address.city
+  } - ${address.uf} - CEP: ${address.zip_code.replace(
+    /(\d{5})(\d{3})/,
+    "$1-$2",
+  )}`;
+});
 
 onBeforeMount(async () => {
   await advertisementStore.getAdvertisement(props.advertisementId);
@@ -26,6 +38,10 @@ onBeforeMount(async () => {
     <v-col cols="12" class="pa-6">
       <p class="font-weight-bold text-primary text-h6 mb-4">
         {{ advertisement.title }}
+      </p>
+
+      <p class="text-subtitle-2 mb-4">
+        <b class="text-primary">Endereço:</b> {{ addressString }}
       </p>
 
       <p class="text-subtitle-2 mb-4">

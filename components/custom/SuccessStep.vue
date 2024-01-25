@@ -1,3 +1,25 @@
+<script lang="ts" setup>
+type IStepConfig = {
+  submit: () => Promise<void>;
+  back: () => boolean;
+};
+
+const emit = defineEmits<{
+  (e: "step-config", config: IStepConfig): void;
+}>();
+
+const router = useRouter();
+
+onBeforeMount(() => {
+  emit("step-config", {
+    submit: async () => {
+      await router.push({ path: "/" });
+    },
+    back: () => true,
+  });
+});
+</script>
+
 <template>
   <v-col>
     <v-row no-gutters justify="center">
@@ -5,12 +27,5 @@
     </v-row>
 
     <p class="text-center my-6">As informações foram salvas com sucesso!</p>
-
-    <v-row no-gutters justify="center">
-      <v-btn color="white">
-        <v-icon icon="mdi-home" />
-        Ir para inicio</v-btn
-      >
-    </v-row>
   </v-col>
 </template>

@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { alertStore } from "../alert";
 import { saveImmobileStore } from "../immobile/save";
+import type { IAddress } from "./interfaces/Address";
 
 type ErrorsType = {
   zip_code: "";
@@ -23,7 +24,7 @@ export const addressStore = defineStore("address", {
       city: "",
       uf: "",
       number: "",
-    },
+    } as IAddress,
     errors: {
       zip_code: "",
       public_place: "",
@@ -72,6 +73,9 @@ export const addressStore = defineStore("address", {
       const alert = alertStore();
       const immobile = saveImmobileStore();
       const nuxtApp = useNuxtApp();
+
+      !this.data.number && (this.data.number = null);
+      !this.data.complement && (this.data.complement = null);
 
       try {
         const {

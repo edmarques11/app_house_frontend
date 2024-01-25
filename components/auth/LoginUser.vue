@@ -9,6 +9,7 @@ const { mobile } = useDisplay();
 const nuxtApp = useNuxtApp();
 
 const loading = ref(false);
+const modalApology = ref({ open: false });
 
 const doLogin = nuxtApp.$debounce(async () => {
   loading.value = true;
@@ -61,6 +62,13 @@ const toggleTypePasswordInput = () => {
         </template>
       </v-text-field>
 
+      <p
+        class="text-primary text-action-recovery"
+        @click="() => (modalApology.open = true)"
+      >
+        Recuperar senha
+      </p>
+
       <v-row no-gutters justify="center" class="mt-3">
         <v-btn
           color="primary"
@@ -71,5 +79,16 @@ const toggleTypePasswordInput = () => {
         >
       </v-row>
     </v-col>
+
+    <v-dialog v-model="modalApology.open" width="550">
+      <CustomApologyModal />
+    </v-dialog>
   </v-container>
 </template>
+
+<style scoped lang="scss">
+.text-action-recovery:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+</style>

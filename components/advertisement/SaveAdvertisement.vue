@@ -63,6 +63,7 @@ onBeforeMount(() => {
       label="Título"
       :error-messages="advertisement.errors.title"
       class="mb-3"
+      counter="100"
     />
 
     <v-textarea
@@ -132,7 +133,7 @@ onBeforeMount(() => {
       Adicione imagens do anúncio
     </p>
     <p
-      v-if="advertisement.errors.images.length"
+      v-if="!!advertisement.errors.images"
       class="mb-4 pl-4 text-caption"
       style="color: #b00020"
     >
