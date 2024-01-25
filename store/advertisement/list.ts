@@ -7,6 +7,7 @@ export const listAdvertisementStore = defineStore("listAdvertisement", {
     page: 1,
     itemsPerPage: 10,
     total: 0,
+    location: "",
   }),
   actions: {
     async list(toOwner = 0) {
@@ -21,6 +22,7 @@ export const listAdvertisementStore = defineStore("listAdvertisement", {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             toOwner,
+            location: this.location,
           },
         });
 

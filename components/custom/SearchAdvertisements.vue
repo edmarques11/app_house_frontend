@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { VTextField, VIcon } from "vuetify/components";
+import { listAdvertisementStore } from "~/store/advertisement/list";
+
+const advertisement = listAdvertisementStore();
 
 const props = withDefaults(
   defineProps<{
@@ -25,9 +28,11 @@ const bindIcon = computed(() => ({ ...props.iconProps }));
 </script>
 
 <template>
-  <v-text-field v-bind="bindTextField">
+  <v-text-field v-model="advertisement.location" v-bind="bindTextField">
     <template #append-inner>
-      <v-icon v-bind="bindIcon" @click="() => {}">{{ icon }}</v-icon>
+      <v-icon v-bind="bindIcon" @click="advertisement.list()">{{
+        icon
+      }}</v-icon>
     </template>
   </v-text-field>
 </template>

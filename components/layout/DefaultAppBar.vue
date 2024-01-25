@@ -33,6 +33,7 @@ const activeAction = computed(() => {
   return route.name ? mapActive[route.name.toString()] : -1;
 });
 const activeColor = computed(() => theme.current.value.colors.primary);
+const renderSearch = computed(() => route.name === "index");
 
 const pushTo = (path: string) => {
   router.push({ path });
@@ -42,7 +43,12 @@ const pushTo = (path: string) => {
 <template>
   <v-app-bar v-bind="bindAppBar">
     <v-app-bar-title>
-      <v-row no-gutters class="pa-0 ma-0" justify="center">
+      <v-row
+        v-show="renderSearch"
+        no-gutters
+        class="pa-0 ma-0"
+        justify="center"
+      >
         <v-col cols="12" md="6" class="pa-1 ma-0">
           <CustomSearchAdvertisements
             :text-field-props="{ hideDetails: true, density: 'compact' }"
