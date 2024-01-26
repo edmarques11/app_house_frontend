@@ -42,6 +42,9 @@ const pushTo = (path: string) => {
 
 <template>
   <v-app-bar v-bind="bindAppBar">
+    <template #prepend>
+      <h2 style="cursor: pointer" @click="() => pushTo('/')">Housing</h2>
+    </template>
     <v-app-bar-title>
       <v-row
         v-show="renderSearch"
