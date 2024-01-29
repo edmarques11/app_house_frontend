@@ -27,7 +27,7 @@ export const alertStore = defineStore("alert", {
 
       setTimeout(() => {
         this.props.modelValue = false;
-      }, 3000);
+      }, 5000);
     },
   },
 });

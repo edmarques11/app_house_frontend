@@ -16,103 +16,114 @@ type ErrorsType = {
   [key: string]: null | string;
 };
 
-export const advertisementStore = defineStore("advertisement", {
-  state: () => ({
-    data: {
-      title: "",
-      description: "",
-      width: 0,
-      length: 0,
-      references: "",
-      phone_contact: "",
-      price: "",
-      immobile_id: "",
-      owner_id: "",
-      images: [],
-    } as IAdvertisement,
-    errors: {
-      title: "",
-      description: "",
-      width: "",
-      length: "",
-      references: "",
-      phone_contact: "",
-      price: "",
-      immobile_id: "",
-      owner_id: "",
-      images: "",
-    } as ErrorsType,
-  }),
-  actions: {
-    setErrors(errors: string[]) {
-      const keysErrors = Object.keys(this.errors);
+export const advertisementStore = defineStore("advertisement", () => {
+  const defaultData: IAdvertisement = {
+    title: "",
+    description: "",
+    width: 0,
+    length: 0,
+    references: "",
+    phone_contact: "",
+    price: "",
+    immobile_id: "",
+    owner_id: "",
+    images: [],
+  };
+  const defaultDataError: ErrorsType = {
+    title: "",
+    description: "",
+    width: "",
+    length: "",
+    references: "",
+    phone_contact: "",
+    price: "",
+    immobile_id: "",
+    owner_id: "",
+    images: "",
+  };
 
-      keysErrors.forEach((key) => {
-        this.errors[key] =
-          errors.find((e) => e.includes(key))?.replace(`${key}: `, "") || null;
+  const dataSave = ref<IAdvertisement>(defaultData);
+  const errorsSave = ref<ErrorsType>(defaultDataError);
+
+  const alert = alertStore();
+  const nuxtApp = useNuxtApp();
+
+  function setErrors(errors: string[]): void {
+    const keysErrors = Object.keys(errorsSave.value);
+
+    keysErrors.forEach((key) => {
+      errorsSave.value[key] =
+        errors.find((e) => e.includes(key))?.replace(`${key}: `, "") || null;
+    });
+  }
+
+  async function uploadImage(file: File): Promise<void> {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const { data } = await nuxtApp.$axios.post("/image", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-    },
-    async uploadImage(file: File) {
-      const nuxtApp = useNuxtApp();
-      const alert = alertStore();
 
-      try {
-        const formData = new FormData();
-        formData.append("file", file);
+      dataSave.value.images.push(data);
+    } catch (err: any) {
+      alert.show(err.message, "error");
+      throw err;
+    }
+  }
 
-        const { data } = await nuxtApp.$axios.post("/image", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+  async function deleteImage(imageId: string): Promise<void> {
+    try {
+      await nuxtApp.$axios.delete(`/image/${imageId}`);
+      dataSave.value.images = dataSave.value.images.filter(
+        (image) => image.id !== imageId,
+      );
 
-        this.data.images.push(data);
-      } catch (err: any) {
-        alert.show(err.message, "error");
-        throw err;
+      alert.show("Imagem deletada com sucesso!", "success");
+    } catch (err: any) {
+      alert.show(err.message, "error");
+      throw err;
+    }
+  }
+
+  async function save(): Promise<void> {
+    try {
+      const { images, price, width, length, ...restData } = dataSave.value;
+      const payload = {
+        images: images.map((image) => image.id),
+        price: Number(price.replaceAll(".", "").replace(",", ".")),
+        width: Number(width),
+        length: Number(length),
+        ...restData,
+      };
+
+      await nuxtApp.$axios.post("/advertisement", payload);
+
+      setErrors([]);
+      alert.show("Anúncio salvo com sucesso!", "success");
+    } catch (err: any) {
+      if (err?.data?.length) {
+        setErrors(err.data);
       }
-    },
-    async deleteImage(imageId: string) {
-      const alert = alertStore();
-      const nuxtApp = useNuxtApp();
+      alert.show(err.message, "error");
+      throw err;
+    }
+  }
 
-      try {
-        await nuxtApp.$axios.delete(`/image/${imageId}`);
-        this.data.images = this.data.images.filter(
-          (image) => image.id !== imageId,
-        );
+  function $reset(): void {
+    dataSave.value = defaultData;
+    errorsSave.value = defaultDataError;
+  }
 
-        alert.show("Imagem deletada com sucesso!", "success");
-      } catch (err: any) {
-        alert.show(err.message, "error");
-        throw err;
-      }
-    },
-    async save() {
-      const alert = alertStore();
-      const nuxtApp = useNuxtApp();
-
-      try {
-        const { images, price, width, length, ...restData } = this.data;
-        const payload = {
-          images: images.map((image) => image.id),
-          price: Number(price.replaceAll(".", "").replace(",", ".")),
-          width: Number(width),
-          length: Number(length),
-          ...restData,
-        };
-
-        await nuxtApp.$axios.post("/advertisement", payload);
-
-        this.setErrors([]);
-        alert.show("Anúncio salvo com sucesso!", "success");
-      } catch (err: any) {
-        if (err?.data?.length) {
-          this.setErrors(err.data);
-        }
-        alert.show(err.message, "error");
-        throw err;
-      }
-    },
-  },
+  return {
+    data: dataSave,
+    errors: errorsSave,
+    uploadImage,
+    deleteImage,
+    save,
+    $reset,
+  };
 });
