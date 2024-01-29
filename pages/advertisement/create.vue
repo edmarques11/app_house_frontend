@@ -1,10 +1,19 @@
 <script setup lang="ts">
+import { addressStore } from "~/store/address";
+import { saveImmobileStore } from "~/store/immobile/save";
+import { advertisementStore } from "~/store/advertisement/save";
+
 import {
   AddressSaveAddress,
   ImmobileSaveImmobile,
   AdvertisementSaveAdvertisement,
   CustomSuccessStep,
 } from "#components";
+
+const address = addressStore();
+const saveImmobile = saveImmobileStore();
+const advertisement = advertisementStore();
+
 const step = ref(0);
 const steps = [
   AddressSaveAddress,
@@ -42,6 +51,12 @@ function executeBack(): void {
     step.value--;
   }
 }
+
+onUnmounted(() => {
+  address.$reset();
+  saveImmobile.$reset();
+  advertisement.$reset();
+});
 </script>
 
 <template>

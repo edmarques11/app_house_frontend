@@ -27,20 +27,47 @@ watch(
 );
 
 onBeforeMount(async () => {
-  advertisement.itemsPerPage = 3;
+  advertisement.$reset();
   await advertisement.list();
+});
+
+onUnmounted(() => {
+  advertisement.$reset();
 });
 </script>
 
 <template>
   <v-col>
+    <v-row no-gutters justify="center" class="ma-0 pa-2">
+      <h2 class="text-primary">Anúncios disponíveis</h2>
+    </v-row>
+
     <v-row no-gutters justify="center">
-      <v-col v-if="!advertisements.length" cols="12" md="5">
-        <h1>Nada a exibir 😕</h1>
-      </v-col>
+      <template v-if="advertisement.loading">
+        <v-col
+          v-for="n in 3"
+          :key="n"
+          cols="12"
+          sm="6"
+          md="3"
+          class="pa-2 px-xs-4"
+        >
+          <v-skeleton-loader
+            class="mx-auto border"
+            max-width="300"
+            type="image, article"
+          ></v-skeleton-loader>
+        </v-col>
+      </template>
+
+      <v-row v-else-if="!advertisements.length" justify="center" no-gutters>
+        <v-col cols="12" class="text-center">
+          <h2 class="mt-16">😕 Nada a exibir</h2>
+        </v-col>
+      </v-row>
 
       <v-row
-        v-if="advertisements.length"
+        v-else-if="advertisements.length"
         no-gutters
         justify="center"
         class="mt-4"
@@ -52,7 +79,7 @@ onBeforeMount(async () => {
           cols="12"
           sm="6"
           md="3"
-          class="ma-2 mx-xs-4"
+          class="pa-2 px-xs-4"
         >
           <AdvertisementCardAdvertisement
             :advertisement="ad"

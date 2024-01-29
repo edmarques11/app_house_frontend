@@ -18,11 +18,11 @@ const images = computed(() => advertisement.value.images);
 const addressString = computed(() => {
   const { address } = advertisement.value.immobile;
 
-  return `${address.district}${
-    address.complement ? " " + address.complement : ""
-  }, ${address.public_place}${address.number ? "Nº " + address.number : ""}, ${
-    address.city
-  } - ${address.uf} - CEP: ${address.zip_code.replace(
+  return `${address?.district}${
+    address?.complement ? " " + address?.complement : ""
+  }, ${address?.public_place}${
+    address?.number ? "Nº " + address?.number : ""
+  }, ${address?.city} - ${address?.uf} - CEP: ${address?.zip_code.replace(
     /(\d{5})(\d{3})/,
     "$1-$2",
   )}`;
@@ -30,6 +30,9 @@ const addressString = computed(() => {
 
 onBeforeMount(async () => {
   await advertisementStore.getAdvertisement(props.advertisementId);
+});
+onUnmounted(() => {
+  advertisementStore.$reset();
 });
 </script>
 

@@ -49,25 +49,52 @@ const currentModal = computed(() => {
 
   return mapModal[modalAdvertisement.value.modal];
 });
+const renderPagination = computed(
+  () => advertisement.total > advertisement.itemsPerPage,
+);
+const totalPages = computed(() =>
+  Math.ceil(advertisement.total / advertisement.itemsPerPage),
+);
+
+watch(
+  () => advertisement.page,
+  () => advertisement.list(1),
+);
 
 onBeforeMount(async () => {
+  advertisement.$reset();
   await advertisement.list(1);
+});
+onUnmounted(() => {
+  advertisement.$reset();
 });
 </script>
 
 <template>
-  <v-row no-gutters justify="center" class="mt-4">
+  <v-row no-gutters justify="center" class="my-4">
+    <v-col cols="12" class="ma-0 pa-2 text-center">
+      <h2 class="text-primary">Seus anúncios</h2>
+    </v-col>
+
     <v-col
       v-for="(ad, idx) in advertisements"
       :key="idx"
       cols="12"
       sm="6"
       md="3"
-      class="ma-2"
+      class="pa-2"
     >
       <AdvertisementCardAdvertisement
         :advertisement="ad"
         @action="(action) => openModal(action, ad.id)"
+      />
+    </v-col>
+
+    <v-col v-if="renderPagination" cols="12" class="mx-0 my-4 pa-2 text-center">
+      <v-pagination
+        v-model="advertisement.page"
+        :length="totalPages"
+        :total-visible="5"
       />
     </v-col>
 

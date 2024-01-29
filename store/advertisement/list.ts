@@ -1,48 +1,69 @@
 import { alertStore } from "../alert";
 import type { IAdvertisement } from "./interfaces/ListAdvertisement";
 
-export const listAdvertisementStore = defineStore("listAdvertisement", {
-  state: () => ({
-    advertisements: [] as IAdvertisement[],
-    page: 1,
-    itemsPerPage: 10,
-    total: 0,
-    location: "",
-  }),
-  actions: {
-    async list(toOwner = 0) {
-      const nuxtApp = useNuxtApp();
-      const alert = alertStore();
+export const listAdvertisementStore = defineStore("listAdvertisement", () => {
+  const advertisements = ref<IAdvertisement[]>([]);
+  const page = ref(1);
+  const itemsPerPage = ref(10);
+  const total = ref(0);
+  const location = ref("");
+  const loading = ref(false);
 
-      try {
-        const {
-          data: { advertisements, total },
-        } = await nuxtApp.$axios.get("/advertisement", {
-          params: {
-            page: this.page,
-            itemsPerPage: this.itemsPerPage,
-            toOwner,
-            location: this.location,
-          },
-        });
+  const alert = alertStore();
+  const nuxtApp = useNuxtApp();
 
-        this.advertisements = advertisements;
-        this.total = total;
-      } catch (err: any) {
-        alert.show(err.message, "error");
-      }
-    },
-    async deleteAdvertisement(id: string) {
-      const alert = alertStore();
-      const nuxt = useNuxtApp();
+  async function list(toOwner = 0): Promise<void> {
+    try {
+      loading.value = true;
 
-      try {
-        await nuxt.$axios.delete(`/advertisement/${id}`);
+      const {
+        data: { advertisements: results, total: totalItems },
+      } = await nuxtApp.$axios.get("/advertisement", {
+        params: {
+          page: page.value,
+          itemsPerPage: itemsPerPage.value,
+          toOwner,
+          location: location.value,
+        },
+      });
 
-        alert.show("Anuncio deletado com sucesso", "success");
-      } catch (err: any) {
-        alert.show(err.message, "error");
-      }
-    },
-  },
+      advertisements.value = results;
+      total.value = totalItems;
+    } catch (err: any) {
+      alert.show(err.message, "error");
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function deleteAdvertisement(id: string): Promise<void> {
+    try {
+      await nuxtApp.$axios.delete(`/advertisement/${id}`);
+
+      alert.show("Anuncio deletado com sucesso", "success");
+    } catch (err: any) {
+      alert.show(err.message, "error");
+    }
+  }
+
+  function $reset(): void {
+    advertisements.value = [] as IAdvertisement[];
+    page.value = 1;
+    itemsPerPage.value = 10;
+    total.value = 0;
+    location.value = "";
+    loading.value = false;
+  }
+
+  return {
+    advertisements,
+    page,
+    itemsPerPage,
+    total,
+    location,
+    loading,
+    list,
+    deleteAdvertisement,
+    $reset,
+  };
 });

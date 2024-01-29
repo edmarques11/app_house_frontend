@@ -28,9 +28,13 @@ const bindIcon = computed(() => ({ ...props.iconProps }));
 </script>
 
 <template>
-  <v-text-field v-model="advertisement.location" v-bind="bindTextField">
+  <v-text-field
+    v-model="advertisement.location"
+    v-bind="bindTextField"
+    @keypress.enter="() => advertisement.list()"
+  >
     <template #append-inner>
-      <v-icon v-bind="bindIcon" @click="advertisement.list()">{{
+      <v-icon v-bind="bindIcon" @click="() => advertisement.list()">{{
         icon
       }}</v-icon>
     </template>

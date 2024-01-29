@@ -96,7 +96,7 @@ export const advertisementStore = defineStore("advertisement", {
         const { images, price, width, length, ...restData } = this.data;
         const payload = {
           images: images.map((image) => image.id),
-          price: Number(price.replace(".", "").replace(",", ".")),
+          price: Number(price.replaceAll(".", "").replace(",", ".")),
           width: Number(width),
           length: Number(length),
           ...restData,

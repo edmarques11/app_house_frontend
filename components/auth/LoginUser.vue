@@ -33,6 +33,10 @@ const toggleTypePasswordInput = () => {
 
   typeInputPassword.value = types[index === 0 ? 1 : 0];
 };
+
+onUnmounted(() => {
+  login.$reset();
+});
 </script>
 
 <template>
