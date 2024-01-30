@@ -4,40 +4,53 @@ import type {
   IImobile,
 } from "~/store/advertisement/interfaces/ListAdvertisement";
 
-export const viewAdvertisementStore = defineStore("viewAdvertisement", {
-  state: () => ({
-    data: {
-      id: "",
-      active: 0,
-      title: "",
-      description: "",
-      width: 0,
-      length: 0,
-      references: "",
-      phone_contact: "",
-      price: 0,
-      immobile_id: "",
-      owner_id: "",
-      created_at: new Date(),
-      updated_at: new Date(),
-      immobile: {} as IImobile,
-      images: [],
-    } as IAdvertisement,
-  }),
-  actions: {
-    async getAdvertisement(id: string) {
-      const alert = alertStore();
-      const nuxt = useNuxtApp();
+function copyData<T>(data: T): T {
+  return JSON.parse(JSON.stringify(data));
+}
 
-      try {
-        const { data } = await nuxt.$axios.get(`/advertisement/${id}`);
+export const viewAdvertisementStore = defineStore("viewAdvertisement", () => {
+  const defaultData: IAdvertisement = {
+    id: "",
+    active: 0,
+    title: "",
+    description: "",
+    width: 0,
+    length: 0,
+    references: "",
+    phone_contact: "",
+    price: 0,
+    immobile_id: "",
+    owner_id: "",
+    created_at: new Date(),
+    updated_at: new Date(),
+    immobile: {} as IImobile,
+    images: [],
+  };
 
-        if (!data.id) return alert.show("Anuncio não encontrado", "error");
+  const dataView = ref<IAdvertisement>(copyData<IAdvertisement>(defaultData));
 
-        this.data = data;
-      } catch (err: any) {
-        alert.show(err.message, "error");
-      }
-    },
-  },
+  const alert = alertStore();
+  const nuxt = useNuxtApp();
+
+  async function getAdvertisement(id: string) {
+    try {
+      const { data } = await nuxt.$axios.get(`/advertisement/${id}`);
+
+      if (!data.id) return alert.show("Anuncio não encontrado", "error");
+
+      dataView.value = data;
+    } catch (err: any) {
+      alert.show(err.message, "error");
+    }
+  }
+
+  function $reset(): void {
+    dataView.value = copyData<IAdvertisement>(defaultData);
+  }
+
+  return {
+    data: dataView,
+    getAdvertisement,
+    $reset,
+  };
 });

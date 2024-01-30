@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { alertStore } from "../alert";
 import { advertisementStore } from "../advertisement/save";
+import type { IImobile } from "./interfaces/Immobile";
 
 type ErrorsType = {
   type: "";
@@ -8,46 +9,65 @@ type ErrorsType = {
   [key: string]: null | string;
 };
 
-export const saveImmobileStore = defineStore("saveImmobile", {
-  state: () => ({
-    data: {
-      type: "",
-      address_id: "",
-    },
-    errors: {
-      type: "",
-      address_id: "",
-    } as ErrorsType,
-  }),
-  actions: {
-    setErrors(errors: string[]) {
-      const keysErrors = Object.keys(this.errors);
+function copyData<T>(data: T): T {
+  return JSON.parse(JSON.stringify(data));
+}
 
-      keysErrors.forEach((key) => {
-        this.errors[key] =
-          errors.find((e) => e.includes(key))?.replace(`${key}: `, "") || null;
-      });
-    },
-    async save() {
-      const alert = alertStore();
-      const advertisement = advertisementStore();
-      const nuxtApp = useNuxtApp();
+export const saveImmobileStore = defineStore("saveImmobile", () => {
+  const defaultData: IImobile = {
+    type: "",
+    address_id: "",
+  };
 
-      try {
-        const {
-          data: { id },
-        } = await nuxtApp.$axios.post("/immobile", this.data);
-        advertisement.data.immobile_id = id;
+  const defaultDataError: ErrorsType = {
+    type: "",
+    address_id: "",
+  };
 
-        this.setErrors([]);
-        alert.show("Imóvel salvo com sucesso!", "success");
-      } catch (err: any) {
-        if (err?.data?.length) {
-          this.setErrors(err.data);
-        }
-        alert.show(err.message, "error");
-        throw err;
+  const dataSave = ref<IImobile>(copyData<IImobile>(defaultData));
+  const dataError = ref<ErrorsType>(copyData<ErrorsType>(defaultDataError));
+
+  const alert = alertStore();
+  const advertisement = advertisementStore();
+  const nuxtApp = useNuxtApp();
+
+  function setErrors(errors: string[]): void {
+    const keysErrors = Object.keys(dataError.value);
+
+    keysErrors.forEach((key) => {
+      dataError.value[key] =
+        errors.find((e) => e.includes(key))?.replace(`${key}: `, "") || null;
+    });
+  }
+
+  async function save(): Promise<void> {
+    try {
+      const {
+        data: { id },
+      } = await nuxtApp.$axios.post("/immobile", dataSave.value);
+      advertisement.data.immobile_id = id;
+
+      setErrors([]);
+      alert.show("Imóvel salvo com sucesso!", "success");
+    } catch (err: any) {
+      if (err?.data?.length) {
+        setErrors(err.data);
       }
-    },
-  },
+      alert.show(err.message, "error");
+      throw err;
+    }
+  }
+
+  function $reset(): void {
+    dataSave.value = copyData<IImobile>(copyData<IImobile>(defaultData));
+    setErrors([]);
+  }
+
+  return {
+    data: dataSave,
+    errors: dataError,
+    setErrors,
+    save,
+    $reset,
+  };
 });

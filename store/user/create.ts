@@ -1,12 +1,6 @@
 import { defineStore } from "pinia";
 import { alertStore } from "../alert";
-
-type CreateUserDTO = {
-  name: string;
-  email: string;
-  password: string;
-  profile_image_id?: string;
-};
+import type { CreateUserDTO } from "./interfaces/User";
 
 type ErrorsType = {
   name: null | string;
@@ -16,48 +10,66 @@ type ErrorsType = {
   [key: string]: null | string;
 };
 
-export const createUserStore = defineStore("createUser", {
-  state: () => ({
-    data: {
-      name: "",
-      email: "",
-      password: "",
-      profile_image_id: "",
-    } as CreateUserDTO,
-    errors: {
-      name: null,
-      email: null,
-      password: null,
-      profile_image_id: null,
-    } as ErrorsType,
-  }),
-  actions: {
-    setErrors(errors: string[]) {
-      const keysErrors = Object.keys(this.errors);
+function copyData<T>(data: T): T {
+  return JSON.parse(JSON.stringify(data));
+}
 
-      keysErrors.forEach((key) => {
-        this.errors[key] =
-          errors.find((e) => e.includes(key))?.replace(`${key}: `, "") || null;
-      });
-    },
-    async create() {
-      const alert = alertStore();
+export const createUserStore = defineStore("createUser", () => {
+  const defaultData: CreateUserDTO = {
+    name: "",
+    email: "",
+    password: "",
+    profile_image_id: "",
+  };
+  const defaultDataError: ErrorsType = {
+    name: null,
+    email: null,
+    password: null,
+    profile_image_id: null,
+  };
 
-      try {
-        const nuxtApp = useNuxtApp();
+  const dataCreate = ref<CreateUserDTO>(copyData<CreateUserDTO>(defaultData));
+  const dataError = ref<ErrorsType>(copyData<ErrorsType>(defaultDataError));
 
-        if (!this.data.profile_image_id) delete this.data.profile_image_id;
+  const alert = alertStore();
+  const nuxtApp = useNuxtApp();
 
-        await nuxtApp.$axios.post("/user", this.data);
+  function setErrors(errors: string[]): void {
+    const keysErrors = Object.keys(dataError.value);
 
-        this.setErrors([]);
-        alert.show("Cadastro realizado com sucesso!", "success");
-      } catch (err: any) {
-        if (err?.data?.length) {
-          this.setErrors(err.data);
-        }
-        alert.show(err.message, "error");
+    keysErrors.forEach((key) => {
+      dataError.value[key] =
+        errors.find((e) => e.includes(key))?.replace(`${key}: `, "") || null;
+    });
+  }
+
+  async function create(): Promise<void> {
+    try {
+      if (!dataCreate.value.profile_image_id)
+        delete dataCreate.value.profile_image_id;
+
+      await nuxtApp.$axios.post("/user", dataCreate.value);
+
+      setErrors([]);
+      alert.show("Cadastro realizado com sucesso!", "success");
+    } catch (err: any) {
+      if (err?.data?.length) {
+        setErrors(err.data);
       }
-    },
-  },
+      alert.show(err.message, "error");
+    }
+  }
+
+  function $reset(): void {
+    dataCreate.value = copyData<CreateUserDTO>(defaultData);
+    setErrors([]);
+  }
+
+  return {
+    data: dataCreate,
+    errors: dataError,
+    setErrors,
+    create,
+    $reset,
+  };
 });

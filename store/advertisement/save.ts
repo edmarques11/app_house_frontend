@@ -16,6 +16,10 @@ type ErrorsType = {
   [key: string]: null | string;
 };
 
+function copyData<T>(data: T): T {
+  return JSON.parse(JSON.stringify(data));
+}
+
 export const advertisementStore = defineStore("advertisement", () => {
   const defaultData: IAdvertisement = {
     title: "",
@@ -42,8 +46,8 @@ export const advertisementStore = defineStore("advertisement", () => {
     images: "",
   };
 
-  const dataSave = ref<IAdvertisement>(defaultData);
-  const errorsSave = ref<ErrorsType>(defaultDataError);
+  const dataSave = ref<IAdvertisement>(copyData<IAdvertisement>(defaultData));
+  const errorsSave = ref<ErrorsType>(copyData<ErrorsType>(defaultDataError));
 
   const alert = alertStore();
   const nuxtApp = useNuxtApp();
@@ -114,8 +118,8 @@ export const advertisementStore = defineStore("advertisement", () => {
   }
 
   function $reset(): void {
-    dataSave.value = defaultData;
-    errorsSave.value = defaultDataError;
+    dataSave.value = copyData<IAdvertisement>(defaultData);
+    setErrors([]);
   }
 
   return {

@@ -7,51 +7,68 @@ type ErrorsType = {
   [key: string]: null | string;
 };
 
-export const loginStore = defineStore("login", {
-  state: () => ({
-    username: "",
-    password: "",
-    errors: {
-      username: null,
-      password: null,
-    } as ErrorsType,
-  }),
-  actions: {
-    setErrors(errors: string[]) {
-      const keysErrors = Object.keys(this.errors);
+function copyData<T>(data: T): T {
+  return JSON.parse(JSON.stringify(data));
+}
 
-      keysErrors.forEach((key) => {
-        this.errors[key] =
-          errors.find((e) => e.includes(key))?.replace(`${key}: `, "") || null;
+export const loginStore = defineStore("login", () => {
+  const defaultDataError: ErrorsType = {
+    username: null,
+    password: null,
+  };
+
+  const dataError = ref<ErrorsType>(copyData<ErrorsType>(defaultDataError));
+  const username = ref<string>("");
+  const password = ref<string>("");
+
+  const nuxtApp = useNuxtApp();
+  const alert = alertStore();
+  const router = useRouter();
+  const cookie = useCookie("authorization", { secure: true });
+
+  function setErrors(errors: string[]) {
+    const keysErrors = Object.keys(dataError.value);
+
+    keysErrors.forEach((key) => {
+      dataError.value[key] =
+        errors.find((e) => e.includes(key))?.replace(`${key}: `, "") || null;
+    });
+  }
+
+  async function doLogin(): Promise<void> {
+    try {
+      const {
+        data: { token },
+      } = await nuxtApp.$axios.post("/login", {
+        username: username.value,
+        password: password.value,
       });
-    },
-    async doLogin() {
-      const alert = alertStore();
-      const router = useRouter();
-      const cookie = useCookie("authorization", { secure: true });
 
-      try {
-        const nuxtApp = useNuxtApp();
-        const { username, password } = this;
+      cookie.value = "Bearer " + token;
 
-        const {
-          data: { token },
-        } = await nuxtApp.$axios.post("/login", {
-          username,
-          password,
-        });
-
-        cookie.value = "Bearer " + token;
-
-        this.setErrors([]);
-        alert.show("Login realizado com sucesso", "success");
-        router.push("/");
-      } catch (err: any) {
-        if (err?.data?.length) {
-          this.setErrors(err.data);
-        }
-        alert.show(err.message, "error");
+      setErrors([]);
+      alert.show("Login realizado com sucesso", "success");
+      router.push("/");
+    } catch (err: any) {
+      if (err?.data?.length) {
+        setErrors(err.data);
       }
-    },
-  },
+      alert.show(err.message, "error");
+    }
+  }
+
+  function $reset(): void {
+    username.value = "";
+    password.value = "";
+    setErrors([]);
+  }
+
+  return {
+    username,
+    password,
+    errors: dataError,
+    setErrors,
+    doLogin,
+    $reset,
+  };
 });
