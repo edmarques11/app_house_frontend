@@ -36,7 +36,7 @@ async function confirmAction() {
 
   await mapActions[modal]();
   modalAdvertisement.value.open = false;
-  await advertisement.list();
+  await advertisement.list(1);
 }
 
 const advertisements = computed(() => advertisement.advertisements);
